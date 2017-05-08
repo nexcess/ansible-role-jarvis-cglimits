@@ -1,22 +1,29 @@
 ---
 
+## general pathing defaults
 cglimits_path: "/data/cgroups-kvm"
 cglimits_symlink_bin: "/usr/sbin/jarvis-cglimits"
 cglimits_rules: "{{ cglimits_path }}/rules"
 cglimits_rules_default: "{{ cglimits_rules }}/global"
 
-## upper limits
+## maximal disk read/write throughput per-vm
 cglimits_default_mbps_read: "150"
 cglimits_default_mbps_write: "125"
 
+## maximal disk read/write iops per-vm
 cglimits_default_iops_read: "1500"
 cglimits_default_iops_write: "1250"
 
+## default cpu and io nice values per-vm
 cglimits_default_cpunice: "10"
 cglimits_default_ionice: "4"
 
+## top usage virtual machines that are fenced to separate cpu/io priorities
+## this is separate of trending usage vm's which are dynamically fenced
 cglimits_default_top_procs: "5"
 cglimits_default_top_ionice: "12"
 cglimits_default_top_cpunice: "5"
 
+## global reduce factor (0.75 = 25%) by which disk throughput/iops is reduced
+## when a compute node is under heavy load, raid rebuild or other impactful events
 cglimits_default_reduce_factor: "0.75"
