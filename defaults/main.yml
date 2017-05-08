@@ -1,0 +1,22 @@
+---
+
+cglimits_path: "/data/cgroups-kvm"
+cglimits_symlink_bin: "/usr/sbin/jarvis-cglimits"
+cglimits_rules: "{{ cglimits_path }}/rules"
+cglimits_rules_default: "{{ cglimits_rules }}/global"
+
+## upper limits
+cglimits_default_mbps_read: "150"
+cglimits_default_mbps_write: "125"
+
+cglimits_default_iops_read: "1500"
+cglimits_default_iops_write: "1250"
+
+cglimits_default_cpunice: "10"
+cglimits_default_ionice: "4"
+
+cglimits_default_top_procs: "5"
+cglimits_default_top_ionice: "12"
+cglimits_default_top_cpunice: "5"
+
+cglimits_default_reduce_factor: "0.75"

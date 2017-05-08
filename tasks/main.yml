@@ -1,0 +1,62 @@
+---
+
+  - name: 'Install cglimits package dependencies'
+    yum:
+      name: "{{ item }}"
+      state: "present"
+      disablerepo: "nexcess"
+      skip_broken: yes
+      update_cache: yes
+    with_items:
+      - "libcgroup"
+      - "libcgroup-tools"
+      - "libcgroup-devel"
+    tags: yum-packages
+
+  - name: 'Start dependent services and set enabled at boot'
+    service:
+      name: "{{ item }}"
+      state: running
+      enabled: yes
+    with_items:
+      - "cgred"
+      - "cgconfig"
+
+  - name: 'Create cglimits path {{ cglimits_path }}'
+    file:
+      path: "{{ cglimits_path }}"
+      state: "directory"
+      owner: "root"
+      group: "root"
+      mode: "0750"
+
+  - name: 'Install cglimits package at {{ cglimits_path }}'
+    copy:
+      src: "files/cgroups-kvm/"
+      dest: "{{ cglimits_path }}"
+      owner: root
+      group: root
+      mode: 0750
+
+  - name: 'Link cglimits to bin path {{ cglimits_symlink_bin }}'
+    file:
+      src: "{{ cglimits_path }}/cglimits"
+      dest: "{{ cglimits_symlink_bin }}"
+      state: link
+
+  - name: 'Setup cglimits default values {{ cglimits_rules_default }}'
+    template:
+      src: "globals.j2"
+      dest: "{{ cglimits_rules_default }}"
+      owner: "root"
+      group: "root"
+      mode: "0640"
+
+  - name: 'Execute cglimits every 5 minutes through cron.d'
+    cron:
+      name: "Execute cglimits every 5 minutes"
+      user: "root"
+      minute: "*/5"
+      job: "{{ cglimits_symlink_bin }} 2> /dev/null"
+      cron_files: cglimits-exec
+    tags: sync-time

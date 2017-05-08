@@ -1,0 +1,46 @@
+##
+# Project Jarvis Cgroups KVM Limits
+# Copyright (C) 2017, Nexcess.net LLC <rmacdonald@nexcess.net>
+#               2017, Ryan MacDonald <ryan@rfxn.com>
+##
+
+update_cpustats() {
+        cpufile="/tmp/.cpustats"
+        if [ -f "$cpufile" ]; then
+                cp -f $cpufile ${cpufile}.last
+                :> $cpufile
+        else
+                touch $cpufile
+        fi
+        for vid in `/usr/bin/virsh list --name | grep -vE "^$"`; do
+                vid_cpu=`/usr/bin/virsh cpu-stats $vid | tail -n5 | grep time | awk '{print$2}' | paste -sd+ | bc`
+                vid_pid=`pgrep -f $vid | tail -n1`
+                if [ -f "/data/cgroups-kvm/rules/$vid" ]; then
+                        . /data/cgroups-kvm/rules/$vid
+                fi
+                if [ "$isvip" ]; then
+                        vip=vip
+                fi
+                echo "$vid_pid $vid $vid_cpu $vip" >> $cpufile
+                unset isvip vip
+        done
+}
+
+diff_cpustats() {
+        cpufile="/tmp/.cpustats"
+        rm -f ${cpufile}.diff
+        if [ -f "${cpufile}.last" ]; then
+        for vid in `/usr/bin/virsh list --name | grep -vE "^$"`; do
+                vid_cpu_last=`cat ${cpufile}.last | grep -w $vid | awk '{print$3}'`
+                vid_cpu_cur=`cat $cpufile | grep -w $vid | awk '{print$3}'`
+                vid_cpu_diff=`echo "$vid_cpu_cur - $vid_cpu_last" | bc`
+                vid_pid=`cat $cpufile | grep -w $vid | awk '{print$1}'`
+                isvip=`cat $cpufile | grep -w $vid | awk '{print$4}'`
+                if [ "$isvip" == "vip" ]; then
+                        vip=vip
+                fi
+                echo "$vid_pid $vid $vid_cpu_diff $vip" >> ${cpufile}.diff
+                unset isvip vip
+        done
+        fi
+}
