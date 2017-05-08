@@ -30,6 +30,14 @@
       group: "root"
       mode: "0750"
 
+  - name: 'Create cglimits rules path {{ cglimits_rules }}'
+    file:
+      path: "{{ cglimits_rules }}"
+      state: "directory"
+      owner: "root"
+      group: "root"
+      mode: "0750"
+
   - name: 'Install cglimits package at {{ cglimits_path }}'
     copy:
       src: "files/cgroups-kvm/"
