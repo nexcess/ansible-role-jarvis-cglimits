@@ -54,7 +54,7 @@
 
   - name: 'Setup cglimits default values {{ cglimits_rules_default }}'
     template:
-      src: "globals.j2"
+      src: "global.rules.j2"
       dest: "{{ cglimits_rules_default }}"
       owner: "root"
       group: "root"
