@@ -1,0 +1,25 @@
+# Block device upper limit throttling policy in MByte/s
+blkio_mbps_read="{{ cglimits_default_mbps_read }}"
+blkio_mbps_write="{{ cglimits_default_mbps_write }}"
+
+# Block device upper limit throttling policy in IOPS
+blkio_iops_read="{{ cglimits_default_iops_read }}"
+blkio_iops_write="{{ cglimits_default_iops_write }}"
+
+# Process CPU scheduling priority levels for ordered process execution
+# Nice values range from -20 (most favorable scheduling) to 19 (least favorable)
+prio_cpunice="{{ cglimits_default_cpunice }}"
+
+# Process IO scheduling priority levels for ordered process IO access
+# Nice values range from 0 (most favorable scheduling) to 7 (least favorable)
+# (uses cbq best-effort scheduling class [-c2])
+prio_ionice="{{ cglimits_default_ionice }}"
+
+# How many top usage processes to change the CPU & IO priority for and the respective
+# priorities to change them too; these variables apply only to the global rule file.
+prio_top_procs="{{ cglimits_default_top_procs }}"
+prio_top_cpunice="{{ cglimits_default_top_ionice }}"
+prio_top_ionice="{{ cglimits_default_top_cpunice }}"
+
+# Global reduction of upper IOPS/MBPS limits across all instances
+#global_reduce_factor="{{ cglimits_default_reduce_factor }}"
