@@ -66,5 +66,5 @@
       user: "root"
       minute: "*/5"
       job: "{{ cglimits_symlink_bin }} 2> /dev/null"
-      cron_files: cglimits-exec
+      cron_file: cglimits-exec
     tags: sync-time
