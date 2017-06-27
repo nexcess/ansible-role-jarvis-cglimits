@@ -21,8 +21,8 @@ cglimits_default_ionice: "4"
 ## top usage virtual machines that are fenced to separate cpu/io priorities
 ## this is separate of trending usage vm's which are dynamically fenced
 cglimits_default_top_procs: "5"
-cglimits_default_top_ionice: "12"
-cglimits_default_top_cpunice: "5"
+cglimits_default_top_cpunice: "12"
+cglimits_default_top_ionice: "5"
 
 ## global reduce factor (0.75 = 25%) by which disk throughput/iops is reduced
 ## when a compute node is under heavy load, raid rebuild or other impactful events
