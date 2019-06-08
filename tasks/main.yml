@@ -16,7 +16,7 @@
   - name: 'Start dependent services and set enabled at boot'
     service:
       name: "{{ item }}"
-      state: running
+      state: started
       enabled: yes
     with_items:
       - "cgred"
