@@ -186,29 +186,25 @@ if [ "$hvmload" -ge "8" ]; then
 
         # set reduced cpu/io nice priority for current trending top usage instances
         for i in `cat $tmpf.top | sort -k3 -n | tail -n$prio_top_procs | awk '{print$1,$2}' | sort | uniq | tr ' ' '%'`; do
-                prio_top_cpunice="14"
-                prio_top_ionice="6"
+                prio_top_cpunice="6"
+                prio_top_ionice="4"
                 vid=`echo $i | cut -d'%' -f1`
                 pid=`echo $i | cut -d'%' -f2`
                 if [ -f "/data/cgroups-kvm/rules/$vid" ]; then
                         . /data/cgroups-kvm/rules/$vid
                 fi
                 if [ "$isvip" ]; then
-                        prio_top_cpunice="11"
-                        prio_top_ionice="5"
-                fi
-                if [ "$isbizvip" ]; then
-                        prio_top_cpunice="6"
+                        prio_top_cpunice="2"
                         prio_top_ionice="2"
                 fi
                 eout "setting reduced cpu($prio_top_cpunice)/io($prio_top_ionice) nice priority on top trending cpu usage instance: $vid" 1
                 /usr/bin/renice -n $prio_top_cpunice $pid >> /dev/null
                 /usr/bin/ionice -c 2 -n $prio_top_ionice -p $pid >> /dev/null
-                unset isvip isbizvip vip
+                unset isvip vip
         done
         if [ -f "$cpufile" ]; then
-         prio_top_cpunice="14"
-         prio_top_ionice="6"
+         prio_top_cpunice="6"
+         prio_top_ionice="4"
          prio="$prio_top_cpunice"
          for pid in `cat $cpufile.diff | sort -n -k3 | tail -n3 | awk '{print$1}'`; do
                 vid=`grep -w $pid $cpufile | awk '{print$2}'`
@@ -220,19 +216,15 @@ if [ "$hvmload" -ge "8" ]; then
                         prio=18
                 fi
                 if [ "$isvip" ]; then
-                        prio_top_cpunice="11"
-                        prio_top_ionice="5"
+                        prio_top_cpunice="3"
+                        prio_top_ionice="3"
                 else
                         prio_top_cpunice="$prio"
-                fi
-                if [ "$isbizvip" ]; then
-                        prio_top_cpunice="6"
-                        prio_top_ionice="2"
                 fi
                 eout "setting reduced cpu($prio_top_cpunice)/io($prio_top_ionice) nice priority on top trending cpu usage instance: $vid" 1
                 /usr/bin/renice -n $prio_top_cpunice $pid >> /dev/null
                 /usr/bin/ionice -c 2 -n $prio_top_ionice -p $pid >> /dev/null
-                unset isvip isbizvip vip
+                unset isvip vip
          done
         fi
 
